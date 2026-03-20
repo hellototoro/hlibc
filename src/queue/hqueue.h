@@ -16,6 +16,13 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "../common/hcommon.h"
+#include "../common/hlibc_type.h"
+
+/*********************
+ *      MACROS
+ *********************/
+#define HQUEUE_STATIC_SIZE(type_size, capacity) \
+    HLIB_STATIC_STORAGE_SIZE(sizeof(struct hqueue_static_layout), sizeof(struct hnode), (type_size), (capacity))
 
 /**********************
  *      TYPEDEFS
@@ -32,7 +39,12 @@ typedef struct hqueue* hqueue_ptr_t;
  * @param type_size 装入容器的数据类型的大小。例：`hqueue_create(sizeof(int));`
  * @return 返回新创建的 queue 容器
  */
+#if !HLIBC_DISABLE_HEAP
 extern hqueue_ptr_t hqueue_create(uint32_t type_size);
+#endif
+
+extern size_t hqueue_static_bytes(uint32_t type_size, uint32_t capacity);
+extern hqueue_ptr_t hqueue_init_static(void *buffer, size_t buffer_size, uint32_t type_size, uint32_t capacity);
 
 /**
  * 删除给定的 queue 容器

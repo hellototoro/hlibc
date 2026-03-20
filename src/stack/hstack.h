@@ -16,6 +16,13 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "../common/hcommon.h"
+#include "../common/hlibc_type.h"
+
+/*********************
+ *      MACROS
+ *********************/
+#define HSTACK_STATIC_SIZE(type_size, capacity) \
+    HLIB_STATIC_STORAGE_SIZE(sizeof(struct hstack_static_layout), sizeof(struct hnode), (type_size), (capacity))
 
 /**********************
  *      TYPEDEFS
@@ -31,7 +38,12 @@ typedef struct hstack* hstack_ptr_t;
  * @param type_size 装入容器的数据类型的大小。例：`hstack_create(sizeof(int));`
  * @return 返回新创建的 stack 容器
  */
+#if !HLIBC_DISABLE_HEAP
 extern hstack_ptr_t hstack_create(uint32_t type_size);
+#endif
+
+extern size_t hstack_static_bytes(uint32_t type_size, uint32_t capacity);
+extern hstack_ptr_t hstack_init_static(void *buffer, size_t buffer_size, uint32_t type_size, uint32_t capacity);
 
 /**
  * 删除给定的 stack 容器

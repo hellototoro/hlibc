@@ -16,6 +16,7 @@ include_directories(
 )
 
 add_executable(hlibc_example main.c list_example.c queue_example.c stack_example.c)
+set_target_properties(hlibc_example PROPERTIES C_STANDARD 11 C_STANDARD_REQUIRED YES)
 target_link_libraries(hlibc_example PRIVATE hlibc)
 
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})

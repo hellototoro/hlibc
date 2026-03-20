@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+#include "hcommon.h"
+
 struct hnode {
     hdata_ptr_t data_ptr;
     struct hnode *next;
@@ -20,6 +22,34 @@ struct hnode {
 struct hdnode {
     hdata_ptr_t data_ptr;
     struct hdnode *prev, *next;
+};
+
+struct hstack_static_layout {
+    uint32_t size;
+    uint32_t capacity;
+    uint32_t type_size;
+    hlib_storage_mode_t storage_mode;
+    struct hnode *free_list;
+    struct hnode *top;
+};
+
+struct hqueue_static_layout {
+    uint32_t size;
+    uint32_t capacity;
+    uint32_t type_size;
+    hlib_storage_mode_t storage_mode;
+    struct hnode *free_list;
+    struct hnode *front;
+    struct hnode *rear;
+};
+
+struct hlist_static_layout {
+    uint32_t list_size;
+    uint32_t capacity;
+    uint32_t type_size;
+    hlib_storage_mode_t storage_mode;
+    struct hdnode *free_list;
+    struct hdnode head;
 };
 
 #ifdef __cplusplus

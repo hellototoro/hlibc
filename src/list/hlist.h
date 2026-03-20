@@ -16,10 +16,13 @@ extern "C" {
  *      INCLUDES
  *********************/
 #include "../common/hcommon.h"
+#include "../common/hlibc_type.h"
 
 /*********************
  *      MACROS
  *********************/
+#define HLIST_STATIC_SIZE(type_size, capacity) \
+    HLIB_STATIC_STORAGE_SIZE(sizeof(struct hlist_static_layout), sizeof(struct hdnode), (type_size), (capacity))
 
 /**********************
  *      TYPEDEFS
@@ -36,7 +39,12 @@ typedef struct hdnode* hlist_iterator_ptr_t;
  * @param type_size 装入容器的数据类型的大小。例：`hlist_create(sizeof(int));`
  * @return 返回新创建的容器
  */
+#if !HLIBC_DISABLE_HEAP
 extern hlist_ptr_t hlist_create(uint32_t type_size);
+#endif
+
+extern size_t hlist_static_bytes(uint32_t type_size, uint32_t capacity);
+extern hlist_ptr_t hlist_init_static(void *buffer, size_t buffer_size, uint32_t type_size, uint32_t capacity);
 
 /**
  * 删除给定的 list 容器
@@ -48,9 +56,9 @@ extern void hlist_destroy(hlist_ptr_t list);
  * Setter functions
  *====================*/
 
-extern void hlist_insert(hlist_ptr_t list, hlist_iterator_ptr_t position, const hdata_ptr_t data_ptr, uint32_t data_size);
-extern void hlist_push_back(hlist_ptr_t list, const hdata_ptr_t data_ptr, uint32_t data_size);
-extern void hlist_push_front(hlist_ptr_t list, const hdata_ptr_t data_ptr, uint32_t data_size);
+extern hlib_status_t hlist_insert(hlist_ptr_t list, hlist_iterator_ptr_t position, const hdata_ptr_t data_ptr, uint32_t data_size);
+extern hlib_status_t hlist_push_back(hlist_ptr_t list, const hdata_ptr_t data_ptr, uint32_t data_size);
+extern hlib_status_t hlist_push_front(hlist_ptr_t list, const hdata_ptr_t data_ptr, uint32_t data_size);
 extern void hlist_pop_back(hlist_ptr_t list);
 extern void hlist_pop_front(hlist_ptr_t list);
 /**
